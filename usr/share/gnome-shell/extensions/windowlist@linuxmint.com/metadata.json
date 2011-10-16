@@ -4,5 +4,5 @@
 "localedir": "/usr/share/locale",
 "description": "Adds a window list to the panel",
 "shell-version": [ "3.2.0" ],
-"url": "http://www.linuxmint.com"
+"url": "http://github.com/linuxmint/mgse-windowlist"
 }
