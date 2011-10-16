@@ -456,7 +456,17 @@ function enable() {
     /* Remove Application Menu */
     let appMenu = Main.panel._appMenu;
     Main.panel._leftBox.remove_actor(appMenu.actor);
-       
+    
+    // Remove A11Y menu     
+    for (let i = 0; i < Main.panel._rightBox.get_children().length; i++) {
+        if (Main.panel._statusArea['a11y'] == Main.panel._rightBox.get_children()[i]._delegate) {
+            Main.panel._rightBox.get_children()[i].destroy();
+            break;
+        }
+    }
+    // addToStatusArea would throw an error on disable if we don't set this to null
+    Main.panel._statusArea['a11y'] = null;
+             
     /* Create a Window List */
     let windowList = new WindowList();
     Main.panel._leftBox.add(windowList.actor, { x_fill: true, y_fill: true });
