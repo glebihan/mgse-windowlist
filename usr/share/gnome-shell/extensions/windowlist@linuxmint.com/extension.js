@@ -7,6 +7,9 @@ const Layout = imports.ui.layout;
 const Tweener = imports.ui.tweener;
 const Overview = imports.ui.overview;
 const Panel = imports.ui.panel;
+const PopupMenu = imports.ui.popupMenu;
+const PanelMenu = imports.ui.panelMenu;
+const Signals = imports.signals;
 const Meta = imports.gi.Meta;
 const AppDisplay = imports.ui.appDisplay;
 const AltTab = imports.ui.altTab;
@@ -16,6 +19,68 @@ const _ = Gettext.gettext;
 
 const PANEL_ICON_SIZE = 24;
 const SPINNER_ANIMATION_TIME = 1;
+
+function AppMenuButtonRightClickMenu(actor, app, metaWindow) {
+    this._init(actor, app, metaWindow);
+}
+
+AppMenuButtonRightClickMenu.prototype = {
+    __proto__: PopupMenu.PopupMenu.prototype,
+
+    _init: function(actor, app, metaWindow) {
+        //take care of menu initialization
+        PopupMenu.PopupMenu.prototype._init.call(this, actor, 0.0, St.Side.TOP, 0);
+        Main.uiGroup.add_actor(this.actor);
+        //Main.chrome.addActor(this.actor, { visibleInOverview: true,
+        //                                   affectsStruts: false });
+        this.actor.hide();
+        actor.connect('key-press-event', Lang.bind(this, this._onSourceKeyPress));
+
+        this.metaWindow = metaWindow;
+        this.app = app;
+
+        this.itemCloseWindow = new PopupMenu.PopupMenuItem('Close');
+        this.itemCloseWindow.connect('activate', Lang.bind(this, this._onCloseWindowActivate));
+        this.addMenuItem(this.itemCloseWindow);
+        this.itemMinimizeWindow = new PopupMenu.PopupMenuItem('Minimize');
+        this.itemMinimizeWindow.connect('activate', Lang.bind(this, this._onMinimizeWindowActivate));
+        this.addMenuItem(this.itemMinimizeWindow);
+        this.itemMaximizeWindow = new PopupMenu.PopupMenuItem('Maximize');
+        this.itemMaximizeWindow.connect('activate', Lang.bind(this, this._onMaximizeWindowActivate));
+        this.addMenuItem(this.itemMaximizeWindow);
+    },
+
+    _onCloseWindowActivate: function(actor, event){
+        //not sure how to do this atm
+    },
+
+    _onMinimizeWindowActivate: function(actor, event){
+        this.metaWindow.minimize(global.get_current_time())
+    },
+
+    _onMaximizeWindowActivate: function(actor, event){
+        //causes gnome-shell 3.0.2 to crash
+        this.metaWindow.maximize(global.get_current_time())
+    },
+
+    _onSourceKeyPress: function(actor, event) {
+        let symbol = event.get_key_symbol();
+        if (symbol == Clutter.KEY_space || symbol == Clutter.KEY_Return) {
+            this.menu.toggle();
+            return true;
+        } else if (symbol == Clutter.KEY_Escape && this.menu.isOpen) {
+            this.menu.close();
+            return true;
+        } else if (symbol == Clutter.KEY_Down) {
+            if (!this.menu.isOpen)
+                this.menu.toggle();
+            this.menu.actor.navigate_focus(this.actor, Gtk.DirectionType.DOWN, false);
+            return true;
+        } else
+            return false;
+    }
+
+};
 
 function AppMenuButton(app, metaWindow, animation) {
     this._init(app, metaWindow, animation);
@@ -91,6 +156,9 @@ AppMenuButton.prototype = {
 			this.startAnimation(); 
 			this.stopAnimation();
 		}
+        
+        //set up the right click menu
+        this.rightClickMenu = new AppMenuButtonRightClickMenu(this.actor, this.app, this.metaWindow);
     },
     
     _onDestroy: function() {
@@ -98,9 +166,9 @@ AppMenuButton.prototype = {
     },
     
     doFocus: function() {
-        let tracker = Shell.WindowTracker.get_default();
-        let focusedApp = tracker.focus_app;    
-        if (this.app == focusedApp) {
+        //let tracker = Shell.WindowTracker.get_default();
+        //let focusedApp = tracker.focus_app;    
+        if (this.metaWindow.has_focus()) {
             this.actor.add_style_pseudo_class('focus');
 	    let icon = this.app.get_faded_icon(1.15 * PANEL_ICON_SIZE);
 	    this._iconBox.set_child(icon);
@@ -113,17 +181,30 @@ AppMenuButton.prototype = {
     },
     
     _onButtonRelease: function(actor, event) {
-        if ( !(Shell.get_event_state(event) & Clutter.ModifierType.BUTTON1_MASK) ) {
-            return;
-        }
-        if ( this.metaWindow.has_focus() ) {
-            this.metaWindow.minimize(global.get_current_time());
-            this.actor.remove_style_pseudo_class('focus');
-        }
-        else {
-            this.metaWindow.activate(global.get_current_time());
-            this.actor.add_style_pseudo_class('focus');	    
-        }
+        if ( Shell.get_event_state(event) & Clutter.ModifierType.BUTTON1_MASK ) {
+            if ( this.rightClickMenu.isOpen ) {
+                this.rightClickMenu.toggle();
+            }
+            if ( this.metaWindow.has_focus() ) {
+                this.metaWindow.minimize(global.get_current_time());
+                this.actor.remove_style_pseudo_class('focus');
+            }
+            else {
+                this.metaWindow.activate(global.get_current_time());
+                this.actor.add_style_pseudo_class('focus');	    
+            }
+        } else if (Shell.get_event_state(event) & Clutter.ModifierType.BUTTON3_MASK) {
+            if (!this.rightClickMenu.isOpen) {
+                // Setting the max-height won't do any good if the minimum height of the
+                // menu is higher then the screen; it's useful if part of the menu is
+                // scrollable so the minimum height is smaller than the natural height
+                //let monitor = global.get_primary_monitor();
+                //this.rightClickMenu.actor.style = ('max-height: ' +
+                //                         Math.round(200) +
+                //                         'px;');
+            }
+            this.rightClickMenu.toggle();   
+        }   
     },
     
     show: function() {
