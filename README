@@ -19,6 +19,15 @@ For the extension to work:
        Alt+F2, and type "r"
        or from a command line: gnome-shell --replace
 
+TODO
+
+ - Finish implementing close, maximize and minimize in right-click menu
+ - Make right click menu appear/disappear faster, or even without animations
+ - Add a "show desktop" toggle button on the complete left to minimize/un_minimize all windows
+ - Reduce the gap between boxes
+ - Make the extension use more space (either by hiding the _centerBox or by telling _leftBox to fill the space)
+ - Emphasize the selected window a little more (either with more contrast/brightness, with borders, or with depth)
+
 GNOME SHELL DEVELOPMENT RESOURCES
 
 http://live.gnome.org/GnomeShell/Extensions
