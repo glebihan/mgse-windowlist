@@ -1,12 +1,3 @@
-// Gnome Shell Window List v0.1
-// for GNOME Shell 3.0.2
-// Kurt Rottmann <kurtrottmann@gmail.com>
-
-// Taking code from
-// Copyright (C) 2011 R M Yorston
-// Licence: GPLv2+
-// http://intgat.tigress.co.uk/rmy/extensions/gnome-shell-frippery-0.2.3.tgz
-
 const Clutter = imports.gi.Clutter;
 const Lang = imports.lang;
 const Shell = imports.gi.Shell;
@@ -187,7 +178,7 @@ AppMenuButton.prototype = {
 //        alloc.min_size = alloc.min_size + Math.max(0, minSize - Math.floor(alloc.min_size / 2));
         alloc.min_size = alloc.min_size + Math.max(0, minSize);
 //        alloc.natural_size = alloc.natural_size + Math.max(0, naturalSize - Math.floor(alloc.natural_size / 2));
-        alloc.natural_size = 75;
+        alloc.natural_size = 150; // FIX ME --> This was set to 75 originally, we need some calculation.. we want this to be as big as possible for the window list to take all available space
     },
 
     _getContentPreferredHeight: function(actor, forWidth, alloc) {
@@ -231,7 +222,7 @@ AppMenuButton.prototype = {
         childBox.y2 = childBox.y1 + Math.min(naturalHeight, allocHeight);
 
         if (direction == St.TextDirection.LTR) {
-            childBox.x1 = Math.floor(iconWidth / 2 + 8);
+            childBox.x1 = Math.floor(iconWidth / 2 + 3);
             childBox.x2 = Math.min(childBox.x1 + naturalWidth, allocWidth);
         } else {
             childBox.x2 = allocWidth - Math.floor(iconWidth / 2);
