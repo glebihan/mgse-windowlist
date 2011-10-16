@@ -35,7 +35,7 @@ AppMenuButton.prototype = {
                                   track_hover: true });
 
         this.actor._delegate = this;
-        this.actor.connect('button-press-event', Lang.bind(this, this._onButtonPress));
+        this.actor.connect('button-release-event', Lang.bind(this, this._onButtonRelease));
 
 		this.metaWindow = metaWindow;
 		this.app = app;
@@ -112,7 +112,7 @@ AppMenuButton.prototype = {
         }
     },
     
-    _onButtonPress: function(actor, event) {
+    _onButtonRelease: function(actor, event) {
         if ( this.metaWindow.has_focus() ) {
             this.metaWindow.minimize(global.get_current_time());
             this.actor.remove_style_pseudo_class('focus');
