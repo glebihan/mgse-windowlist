@@ -441,17 +441,25 @@ function init(extensionMeta) {
 function enable() {
 	/* Move Clock to the right */
     let _children = Main.panel._rightBox.get_children();
-    let _clock    = Main.panel._dateMenu;
+    let _clock    = Main.panel._dateMenu;    
     Main.panel._centerBox.remove_actor(_clock.actor);
     Main.panel._rightBox.insert_actor(_clock.actor, _children.length);
     
+    // Move Activities button to the right
+    let _activitiesButton = Main.panel._activitiesButton;
+    Main.panel._leftBox.remove_actor(_activitiesButton.actor);
+    Main.panel._rightBox.insert_actor(_activitiesButton.actor, _children.length);
+    // Change Activities label
+    _activitiesButton._label.set_text("-");            
+    //_activitiesButton._label.hide();
+            
     /* Remove Application Menu */
     let appMenu = Main.panel._appMenu;
     Main.panel._leftBox.remove_actor(appMenu.actor);
        
     /* Create a Window List */
     let windowList = new WindowList();
-    Main.panel._leftBox.add(windowList.actor);
+    Main.panel._leftBox.add(windowList.actor, { x_fill: true, y_fill: true });
 }
 
 function disable() {
