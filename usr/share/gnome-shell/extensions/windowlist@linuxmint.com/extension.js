@@ -439,11 +439,11 @@ function init(extensionMeta) {
 }
 
 function enable() {
-	/* Move Clock - http://www.fpmurphy.com/gnome-shell-extensions/moveclock.tar.gz */
-//    let _children = Main.panel._rightBox.get_children();
-//    let _clock    = Main.panel._dateMenu;
-//    Main.panel._centerBox.remove_actor(_clock.actor);
-//    Main.panel._rightBox.insert_actor(_clock.actor, _children.length - 1);
+	/* Move Clock to the right */
+    let _children = Main.panel._rightBox.get_children();
+    let _clock    = Main.panel._dateMenu;
+    Main.panel._centerBox.remove_actor(_clock.actor);
+    Main.panel._rightBox.insert_actor(_clock.actor, _children.length);
     
     /* Remove Application Menu */
     let appMenu = Main.panel._appMenu;
