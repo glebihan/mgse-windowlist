@@ -113,6 +113,9 @@ AppMenuButton.prototype = {
     },
     
     _onButtonRelease: function(actor, event) {
+        if ( !(Shell.get_event_state(event) & Clutter.ModifierType.BUTTON1_MASK) ) {
+            return;
+        }
         if ( this.metaWindow.has_focus() ) {
             this.metaWindow.minimize(global.get_current_time());
             this.actor.remove_style_pseudo_class('focus');
