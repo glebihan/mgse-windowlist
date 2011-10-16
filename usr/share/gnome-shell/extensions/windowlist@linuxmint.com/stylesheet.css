@@ -1,0 +1,9 @@
+.panel-button {
+    spacing: 4px;
+}
+
+.panel-button:active,
+.panel-button:checked,
+.panel-button:focus {
+    color: rgba(255,255,255,1.0);
+}

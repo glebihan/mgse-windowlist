@@ -1,0 +1,32 @@
+INSTALLATION
+
+./test installs the extension on your computer (in /usr/share/gnome-shell/extensions/)
+
+For the extension to work:
+
+ - It needs to be compatible with your version of gnome shell
+       To know your version of gnome-shell, type "gnome-shell --version".
+       Make sure that version is in "shell-version" in the metadata.json file
+
+ - It needs to be enabled. 
+       gsettings list-recursively  org.gnome.shell
+       gsettings get org.gnome.shell disabled-extensions
+       gsettings get org.gnome.shell enabled-extensions
+       gsettings reset org.gnome.shell enabled-extensions
+       gsettings set org.gnome.shell enabled-extensions "['extension-name@linuxmint.com']"
+
+ - You need to restart Gnome Shell
+       Alt+F2, and type "r"
+       or from a command line: gnome-shell --replace
+
+GNOME SHELL DEVELOPMENT RESOURCES
+
+http://live.gnome.org/GnomeShell/Extensions
+http://blog.fpmurphy.com/2011/04/gnome-3-shell-extensions.html
+
+GNOME 3.2
+
+3.1.90.1 is an early version of 3.2...
+Gnome 3.2 introduces many changes.. and so almost all extensions written for previous versions of Gnome Shell are likely not to work :)
+
+main() is replaced by init(), enabled(), disabled()... and there's many other changes as well ;)

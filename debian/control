@@ -1,0 +1,11 @@
+Source: mgse-windowlist
+Section: admin
+Priority: optional
+Maintainer: Clement Lefebvre <root@linuxmint.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: mgse-windowlist
+Architecture: all
+Description: Gnome Shell Extension Window List
+ A window list for Gnome 3
