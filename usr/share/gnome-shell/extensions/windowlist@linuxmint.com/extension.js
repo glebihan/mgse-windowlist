@@ -20,6 +20,7 @@ const _ = Gettext.gettext;
 const PANEL_ICON_SIZE = 24;
 const SPINNER_ANIMATION_TIME = 1;
 
+
 function AppMenuButtonRightClickMenu(actor, app, metaWindow) {
     this._init(actor, app, metaWindow);
 }
@@ -375,7 +376,7 @@ WindowList.prototype = {
         windows.sort(function(w1, w2) {
             return w1.get_stable_sequence() - w2.get_stable_sequence();
         });
-
+                
         // Create list items for each window
         let tracker = Shell.WindowTracker.get_default();
         for ( let i = 0; i < windows.length; ++i ) {
@@ -541,7 +542,13 @@ function enable() {
     }
     // addToStatusArea would throw an error on disable if we don't set this to null
     Main.panel._statusArea['a11y'] = null;
-             
+    
+    // Create a show desktop button
+    let icon = new St.Icon({icon_name: "desktop", icon_size: 24, icon_type: St.IconType.FULLCOLOR});             
+    let button = new St.Button();
+    button.add_actor(icon);
+    Main.panel._leftBox.add(button, { x_fill: true, y_fill: true });
+    
     /* Create a Window List */
     let windowList = new WindowList();
     Main.panel._leftBox.add(windowList.actor, { x_fill: true, y_fill: true });
@@ -552,5 +559,5 @@ function disable() {
     let windowList = new WindowList();
     let appMenu = Main.panel._appMenu;    
     Main.panel._leftBox.remove_actor(windowList);
-    Main.panel._leftBox.add(appMenu.actor);
+    Main.panel._leftBox.add(appMenu.actor);    
 }
